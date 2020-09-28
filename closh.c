@@ -66,46 +66,44 @@ int main() {
         // /////////////////////////////////////////////////////
 
         // just executes the given command once - REPLACE THIS CODE WITH YOUR OWN
+
         int childID;
         if (parallel == 0) {
             for (int x = 0; x < count - 1; x++) {
                 childID = fork();
-
                 if (childID == 0) {
-                    sleep(1);
                     printf("this is childID (pid:%d)\n", (int)getpid());
                     execvp(cmdTokens[0], cmdTokens);
                     exit(EXIT_SUCCESS);
-                    sleep(1);
 
-                }
-                else {
+                } else {
+                    //waitid returns childID when child id completes
+                    //otherwise it waits another 1 sec up to 8
                     for (int x = 0; x < 8; x++) {
                         int endID = waitpid(childID, &status, 0);
                         if (endID == childID) {
                             break;
-                        }
-                        else {
+                        } else {
                             sleep(1);
                         }
                     }
                 }
             }
+            printf("this is parent (pid:%d)\n", (int)getpid());
             execvp(cmdTokens[0], cmdTokens);
 
-        }
-        else if (parallel == 1) {
-            for (int x = 0; x < count * 0.5; x++) {
-                childID = fork();
+        } else if (parallel == 1) {
+            // amount of procces' = children - 1 parent
+            for (int x = 0; x < count - 1; x++) {
+                //original process parent always under 7000
+                if (getppid() < 7000)
+                    childID = fork();
             }
             if (childID == 0) {
                 printf("this is childID (pid:%d)\n", (int)getpid());
-                sleep(1);
                 execvp(cmdTokens[0], cmdTokens);
-            }
-            else {
+            } else {
                 printf("this is parent (pid:%d)\n", (int)getpid());
-                sleep(1);
                 execvp(cmdTokens[0], cmdTokens);
             }
 
