@@ -6,8 +6,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <signal.h>
-#include <sys/types.h>
 #include <sys/wait.h>
+#include <sys/types.h>
 
 #define TRUE 1
 #define FALSE 0
@@ -36,10 +36,10 @@ int main() {
     int count; // number of times to execute command
     int parallel; // whether to run in parallel or sequentially
     int timeout; // max seconds to run set of commands (parallel) or each command (sequentially)
-    int status;
-
+    pid_t pid;
+    
     while (TRUE) { // main shell input loop
-
+        
         // begin parsing code - do not modify
         printf("closh> ");
         fgets(cmd, sizeof(cmd), stdin);
@@ -49,75 +49,81 @@ int main() {
             printf("  count> ");
             count = readChar() - '0';
         } while (count <= 0 || count > 9);
-
+        
         printf("  [p]arallel or [s]equential> ");
         parallel = (readChar() == 'p') ? TRUE : FALSE;
         do {
             printf("  timeout> ");
             timeout = readChar() - '0';
         } while (timeout < 0 || timeout > 9);
+        
         // end parsing code
-
+        
+        
         ////////////////////////////////////////////////////////
         //                                                    //
         // TODO: use cmdTokens, count, parallel, and timeout  //
         // to implement the rest of closh                     //
         //                                                    //
         // /////////////////////////////////////////////////////
-
+        
         // just executes the given command once - REPLACE THIS CODE WITH YOUR OWN
-        int childID;
-        if (parallel == 0) {
-            for (int x = 0; x < count - 1; x++) {
-                childID = fork();
-
-                if (childID == 0) {
-                    sleep(1);
-                    printf("this is childID (pid:%d)\n", (int)getpid());
-                    execvp(cmdTokens[0], cmdTokens);
-                    exit(EXIT_SUCCESS);
-                    sleep(1);
-
-                }
-                else {
-                    for (int x = 0; x < 8; x++) {
-                        int endID = waitpid(childID, &status, 0);
-                        if (endID == childID) {
-                            break;
-                        }
-                        else {
-                            sleep(1);
-                        }
-                    }
-                }
-            }
-            execvp(cmdTokens[0], cmdTokens);
-
+        int i,pid;
+        pid_t pids[count];
+        
+        if (parallel == FALSE)
+        {
+        	for(i = 0; i<count; i++)
+        	{
+			//fork 
+			pids[i] = fork();
+			//execvp
+			if (pids[i] == 0 && i==0)
+			{
+				printf("Process ID is %d \n", getpid());
+				execvp(cmdTokens[0], cmdTokens);
+				printf("Can't execute %s\n", cmdTokens[0]);
+				exit(1);
+			}
+			else if (pids[i] == 0)
+			{
+				waitpid(pids[i-1],NULL,0);
+				sleep(1);
+				printf("Process ID is %d \n", getpid());
+				execvp(cmdTokens[0], cmdTokens);
+				printf("Can't execute %s\n", cmdTokens[0]);
+				exit(1);
+			}
+        	};
         }
-        else if (parallel == 1) {
-            for (int x = 0; x < count * 0.5; x++) {
-                childID = fork();
-            }
-            if (childID == 0) {
-                printf("this is childID (pid:%d)\n", (int)getpid());
-                sleep(1);
-                execvp(cmdTokens[0], cmdTokens);
-            }
-            else {
-                printf("this is parent (pid:%d)\n", (int)getpid());
-                sleep(1);
-                execvp(cmdTokens[0], cmdTokens);
-            }
-
+        else
+        {
+        	for (i = 0; i < count; i++)
+        	{
+        		pids[i] = fork();
+        		if (pids[i] == 0)
+        		{
+        			printf("Process ID is %d \n", getpid());
+        			execvp(cmdTokens[0], cmdTokens);
+				printf("Can't execute %s\n", cmdTokens[0]);
+				exit(1);
+        		}
+        	}
+        	if (timeout > 0)
+		{
+			sleep(timeout);
+			for (i = 0; i < count; i++)
+			{
+				kill(pids[i], SIGKILL);
+			}
+		}
         }
+        
 
-
-
-
-        // replaces the current process with the given program
-       // doesn't return unless the calling failed
-        printf("Can't execute %s\n", cmdTokens[0]); // only reached if running the program failed
-        exit(1);
+	
+	
+	waitpid(pids[count-1],NULL,0);
+        //exit(1);        
     }
 }
 
