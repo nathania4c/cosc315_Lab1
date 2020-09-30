@@ -66,8 +66,6 @@ int main() {
         // to implement the rest of closh                     //
         //                                                    //
         // /////////////////////////////////////////////////////
-        
-        // just executes the given command once - REPLACE THIS CODE WITH YOUR OWN
         int i,pid;
         pid_t pids[count];
         
@@ -76,23 +74,20 @@ int main() {
         	for(i = 0; i<count; i++)
         	{
 			//fork 
-			pids[i] = fork();
+			pid = fork();
 			//execvp
-			if (pids[i] == 0 && i==0)
+			if (pid == 0)
 			{
 				printf("Process ID is %d \n", getpid());
 				execvp(cmdTokens[0], cmdTokens);
 				printf("Can't execute %s\n", cmdTokens[0]);
 				exit(1);
 			}
-			else if (pids[i] == 0)
+			else
 			{
-				waitpid(pids[i-1],NULL,0);
-				sleep(1);
-				printf("Process ID is %d \n", getpid());
-				execvp(cmdTokens[0], cmdTokens);
-				printf("Can't execute %s\n", cmdTokens[0]);
-				exit(1);
+				waitpid(pid,NULL,0);
+				sleep(timeout);
+				kill(pid, SIGKILL);
 			}
         	};
         }
@@ -118,12 +113,7 @@ int main() {
 			}
 		}
         }
-        
-
-	
-	
-	waitpid(pids[count-1],NULL,0);
-        //exit(1);        
+   
     }
 }
 
