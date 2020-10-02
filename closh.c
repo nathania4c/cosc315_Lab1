@@ -8,6 +8,7 @@
 #include <signal.h>
 #include <sys/wait.h>
 #include <sys/types.h>
+#include <time.h>
 
 #define TRUE 1
 #define FALSE 0
@@ -36,7 +37,7 @@ int main() {
     int count; // number of times to execute command
     int parallel; // whether to run in parallel or sequentially
     int timeout; // max seconds to run set of commands (parallel) or each command (sequentially)
-    pid_t pid;
+    pid_t pid, pids[count]; //pids used to run in parallel
     
     while (TRUE) { // main shell input loop
         
@@ -56,8 +57,51 @@ int main() {
             printf("  timeout> ");
             timeout = readChar() - '0';
         } while (timeout < 0 || timeout > 9);
-        
         // end parsing code
+        
+        int cid, i;
+        
+        if (!parallel) {
+          for (i = 0; i < count; i++){
+            
+            //fork parent process
+            cid = fork();
+        
+            if (cid == 0) { //if this is a child process
+              printf("Hi, I am a child process. MY process ID is %d\n", getpid());
+              execvp(cmdTokens[0], cmdTokens);
+              // doesn't return unless the calling failed
+              printf("Can't execute %s\n", cmdTokens[0]); // only reached if running the program failed
+              exit(1); 
+            } else { //if this is a parent process
+              waitpid(getpid(), NULL, 0); //wait for child process to terminate
+              sleep(timeout); //will suspend execution for specified timeout period
+              printf("I am the parent process. My process ID is %d, see ya!\n", getpid());
+              kill(cid, SIGKILL); //kill parent process
+            }
+          }; 
+        } else {
+          
+          for (i=0; i < count; i++){
+            pids[i] = fork(); //forks the current process i amount of times 
+            if (pids[i] == 0){ //if current process is a child process
+              printf("My process ID is %d\n", getpid());
+              execvp(cmdTokens[0], cmdTokens);
+              // doesn't return unless the calling failed
+              printf("Can't execute %s\n", cmdTokens[0]); // only reached if running the program failed
+              exit(1); 
+            } else {
+              printf(":)\n");
+            }
+          }; 
+          sleep(timeout); //suspends termination until specified amount of timeout period
+          for (i=0; i < count; i++){
+              printf("Caution: Killing in Progress\n");
+              kill(pids[i], SIGKILL); //kill each process
+          };
+        }
+        
+        exit(0);
         
         
         ////////////////////////////////////////////////////////
@@ -66,54 +110,10 @@ int main() {
         // to implement the rest of closh                     //
         //                                                    //
         // /////////////////////////////////////////////////////
-        int i,pid;
-        pid_t pids[count];
         
-        if (parallel == FALSE)
-        {
-        	for(i = 0; i<count; i++)
-        	{
-			//fork 
-			pid = fork();
-			//execvp
-			if (pid == 0)
-			{
-				printf("Process ID is %d \n", getpid());
-				execvp(cmdTokens[0], cmdTokens);
-				printf("Can't execute %s\n", cmdTokens[0]);
-				exit(1);
-			}
-			else
-			{
-				waitpid(pid,NULL,0);
-				sleep(timeout);
-				kill(pid, SIGKILL);
-			}
-        	};
-        }
-        else
-        {
-        	for (i = 0; i < count; i++)
-        	{
-        		pids[i] = fork();
-        		if (pids[i] == 0)
-        		{
-        			printf("Process ID is %d \n", getpid());
-        			execvp(cmdTokens[0], cmdTokens);
-				printf("Can't execute %s\n", cmdTokens[0]);
-				exit(1);
-        		}
-        	}
-        	if (timeout > 0)
-		{
-			sleep(timeout);
-			for (i = 0; i < count; i++)
-			{
-				kill(pids[i], SIGKILL);
-			}
-		}
-        }
-   
+        // just executes the given command once - REPLACE THIS CODE WITH YOUR OWN
+        //execvp(cmdTokens[0], cmdTokens); // replaces the current process with the given program
+               
     }
 }
 
