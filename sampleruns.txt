@@ -1,0 +1,46 @@
+nats-mbp:cosc315_Lab1 Nat$ gcc closh.c -o closh
+nats-mbp:cosc315_Lab1 Nat$ ./closh
+closh> hostname
+  count> 3
+  [p]arallel or [s]equential> s
+  timeout> 7
+Hi, I am a child process. MY process ID is 55812
+nats-mbp
+I am the parent process. My process ID is 55794, see ya!
+Hi, I am a child process. MY process ID is 55826
+nats-mbp
+I am the parent process. My process ID is 55794, see ya!
+Hi, I am a child process. MY process ID is 55843
+nats-mbp
+I am the parent process. My process ID is 55794, see ya!
+nats-mbp:cosc315_Lab1 Nat$ ./closh
+closh> hostname
+  count> 3
+  [p]arallel or [s]equential> p
+  timeout> 0
+:)
+:)
+My process ID is 55881
+:)
+Caution: Killing in Progress
+My process ID is 55882
+Caution: Killing in Progress
+Caution: Killing in Progress
+nats-mbp:cosc315_Lab1 Nat$ ./closh
+closh> hostname
+  count> 3
+  [p]arallel or [s]equential> p
+  timeout> 7
+:)
+:)
+My process ID is 55979
+:)
+My process ID is 55980
+My process ID is 55981
+nats-mbp
+nats-mbp
+nats-mbp
+Caution: Killing in Progress
+Caution: Killing in Progress
+Caution: Killing in Progress
+nats-mbp:cosc315_Lab1 Nat$
