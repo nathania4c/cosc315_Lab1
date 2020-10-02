@@ -78,9 +78,8 @@ int main() {
               sleep(timeout); //will suspend execution for specified timeout period
               printf("I am the parent process. My process ID is %d, see ya!\n", getpid());
               kill(cid, SIGKILL); //kill parent process
-              //exit(0);
             }
-          }; //exit(0);
+          }; 
         } else {
           
           for (i=0; i < count; i++){
@@ -95,13 +94,11 @@ int main() {
               printf(":)\n");
             }
           }; 
-          //
           sleep(timeout); //suspends termination until specified amount of timeout period
           for (i=0; i < count; i++){
               printf("Caution: Killing in Progress\n");
               kill(pids[i], SIGKILL); //kill each process
           };
-          //
         }
         
         exit(0);
