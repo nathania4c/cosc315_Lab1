@@ -1,5 +1,5 @@
 // closh.c - COSC 315, Winter 2020
-// YOUR NAME HERE
+// Group 11
 
 #include <stdio.h>
 #include <unistd.h>
