@@ -74,10 +74,9 @@ int main() {
               printf("Can't execute %s\n", cmdTokens[0]); // only reached if running the program failed
               exit(1); 
             } else { //if this is a parent process
-              waitpid(getpid(), NULL, 0); //wait for child process to terminate
+              waitpid(cid, NULL, 0); //wait for child process to terminate
               sleep(timeout); //will suspend execution for specified timeout period
-              printf("I am the parent process. My process ID is %d, see ya!\n", getpid());
-              kill(cid, SIGKILL); //kill parent process
+              kill(cid, SIGKILL); //kill child process
             }
           }; 
         } else {
@@ -90,30 +89,13 @@ int main() {
               // doesn't return unless the calling failed
               printf("Can't execute %s\n", cmdTokens[0]); // only reached if running the program failed
               exit(1); 
-            } else {
-              printf(":)\n");
-            }
+            } 
           }; 
           sleep(timeout); //suspends termination until specified amount of timeout period
           for (i=0; i < count; i++){
-              printf("Caution: Killing in Progress\n");
               kill(pids[i], SIGKILL); //kill each process
           };
-        }
-        
-        exit(0);
-        
-        
-        ////////////////////////////////////////////////////////
-        //                                                    //
-        // TODO: use cmdTokens, count, parallel, and timeout  //
-        // to implement the rest of closh                     //
-        //                                                    //
-        // /////////////////////////////////////////////////////
-        
-        // just executes the given command once - REPLACE THIS CODE WITH YOUR OWN
-        //execvp(cmdTokens[0], cmdTokens); // replaces the current process with the given program
-               
+        }   
     }
 }
 
