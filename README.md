@@ -2,9 +2,9 @@
 
 ##### Members + Contributions: 
 * Ethan Frigon --- figured out the logic for sequential and parallel and worked on the code
-* Ryan Lam --- helped with figuring out the logic for sequential and parallel and worked on the code
-* Siying Wu --- 
-* Nathania Hendradjaja --- worked on the code, wrote the readme, created sample output file
+* Ryan Lam --- helped figure out the logic for sequential and parallel and worked on the code
+* Siying Wu --- worked on the code
+* Nathania Hendradjaja --- worked on the code, wrote the design document, created sample output file
 
 ## Design Choices:
 ### For Sequential:
