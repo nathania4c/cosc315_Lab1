@@ -15,7 +15,7 @@
 * To execute the program count number of times only, parent will not execute (since child already did) 
 * Parent will isntead be killed using kill() system call
 ### For Parallel: 
-* The process ids will be stored in an array of pid_t (type for process ids) since multiple pids can be referenced because mutiple proccesses can be running at a time
+* The process ids will be stored in an array of pid_t (type for process ids) to allow the next pid can be printed before the previous process is executed 
 * The child process will be executing the program
 * The sleep() system call is implemented in order to suspend (delay) the next (killing) process by the specified timeout period
 #### Note: The exit(0) is placed at the end of the while loop to exit and avoid running the closh again
