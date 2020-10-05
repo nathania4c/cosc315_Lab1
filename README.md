@@ -1,10 +1,10 @@
 # cosc315_Lab1
 
-##### Members: 
-* Ethan Frigon
-* Ryan Lam
-* Siying Wu
-* Nathania Hendradjaja
+##### Members + Contributions: 
+* Ethan Frigon --- figured out the logic for sequential and parallel and worked on the code
+* Ryan Lam --- helped with figuring out the logic for sequential and parallel and worked on the code
+* Siying Wu --- 
+* Nathania Hendradjaja --- worked on the code, wrote the readme, created sample output file
 
 ## Design Choices:
 ### For Sequential:
@@ -17,6 +17,5 @@
 ### For Parallel: 
 * The process ids will be stored in an array of pid_t (type for process ids) since multiple pids can be referenced because mutiple proccesses can be running at a time
 * The child process will be executing the program
-* To further show that multiple processes can run simultaneously, if no child process is currently executing, a string will be printed, and when (after or before a child process) this string is printed may vary
 * The sleep() system call is implemented in order to suspend (delay) the next (killing) process by the specified timeout period
 #### Note: The exit(0) is placed at the end of the while loop to exit and avoid running the closh again
